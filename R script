@@ -1,0 +1,86 @@
+# Funcion que permite calcular los cuantiles de un grupo de fechas
+# El usuario ingresa el codigo del grupo de actividad, el año y ciclo agricola
+# luis Vargas --  l.vargas@cgiar.org -- junio de 2015
+                    
+qfecha <- function(year, cycle, group){
+        ## Read data
+        setwd("C:/Users/LVARGAS/Documents")
+        datosArchivo <- read.csv("fechas.csv", colClasses = "character")
+        names(datosArchivo)
+       
+        # Validacion de año
+        if(year >= 2012 && year <= 2014){
+               print("Existe año")
+               
+               subDatosYear <- datosArchivo[datosArchivo[,1]== year, ] 
+                
+               # Extrae en un vector los campo de codeCiclo
+               # Despues valida que exista el nombre del ciclo
+               vectorcodeCiclo <- subDatosYear[,3]
+               existeCiclo = 0
+               
+               for(i in vectorcodeCiclo){
+                       if(i == cycle){
+                               existeCiclo = 1
+                       }
+               } 
+               
+               # Validacion de ciclo
+               if(existeCiclo == 1){
+                       print("Existe ciclo")
+                       
+                       subDatosYearCiclo <- subDatosYear[subDatosYear[,3]== cycle, ]
+                       
+                       # Extrae en un vector los campo de codeGrupo
+                       # Despues valida que exista el nombre del Grupo
+                       vectorcodeGrupo <- subDatosYearCiclo[,20]
+                       
+                       existeGrupo = 0
+                       
+                       for(i in vectorcodeGrupo){
+                               if(i == group){
+                                       existeGrupo = 1
+                               }                                
+                                       
+                       }
+                       
+                       # Validacion de grupo                       
+                       if(existeGrupo == 1){
+                               print("Existe Grupo")                                
+                              
+                               subDatosYearCicloGrupo <- subDatosYearCiclo[subDatosYearCiclo[,20]== group, ]
+                               
+                               # Calculo de cuantiles
+                               fechas <- subDatosYearCicloGrupo[,24]
+                               fechas <- as.Date(fechas)
+                               class(fechas)
+                               as.Date(quantile(as.numeric(fechas)), origin = "1970-01-01")                                                           
+                                                                                      
+                               
+                               
+                       }else{
+                               stop("Invalid group")
+                       } 
+                               
+                                              
+               }else{
+                       stop("Invalid cycle")
+               }      
+                              
+                               
+        } else{
+                stop("invalid year")
+        }  
+                
+} 
+
+qfecha(2012,'PV','CTP')
+qfecha(2012,'PV','CTE')
+qfecha(2013,'PV','CTP')
+qfecha(2013,'OI','CTP')
+qfecha(2013,'PV','CTE')
+qfecha(2013,'OI','CTE')
+qfecha(2014,'OI','CTE')
+qfecha(2014,'OI','CTP')
+qfecha(2014,'PV','CTP')
+qfecha(2014,'PV','CTE')
